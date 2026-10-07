@@ -42,6 +42,9 @@ function Interview({ config }) {
 
   const [recordedAnswers, setRecordedAnswers] = useState([]);
 
+  const [transcript, setTranscript] = useState("");
+  const [transcribing, setTranscribing] = useState(false);
+
   const [error, setError] = useState("");
 
   const interviewQuestions =
@@ -112,11 +115,81 @@ function Interview({ config }) {
   };
 
   /*
+   * Send recorded audio to FastAPI + Whisper
+   */
+  const transcribeAudio = async (audioBlob) => {
+    try {
+      setTranscribing(true);
+      setError("");
+      setTranscript("");
+
+      const formData = new FormData();
+
+      formData.append(
+        "file",
+        audioBlob,
+        "answer.webm"
+      );
+
+      console.log("Sending audio to backend...");
+
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/transcribe",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+
+        console.error(
+          "Backend error:",
+          errorData
+        );
+
+        throw new Error(
+          "Speech-to-text request failed."
+        );
+      }
+
+      const data = await response.json();
+
+      console.log(
+        "Transcript received:",
+        data.transcript
+      );
+
+      setTranscript(data.transcript);
+
+      return data.transcript;
+
+    } catch (err) {
+      console.error(
+        "Transcription error:",
+        err
+      );
+
+      setError(
+        "Could not convert your answer to text."
+      );
+
+      return "";
+
+    } finally {
+      setTranscribing(false);
+    }
+  };
+
+  /*
    * Start recording answer
    */
   const startRecording = () => {
     if (!streamRef.current) {
-      setError("Please start the camera and microphone first.");
+      setError(
+        "Please start the camera and microphone first."
+      );
       return;
     }
 
@@ -124,7 +197,9 @@ function Interview({ config }) {
       streamRef.current.getAudioTracks();
 
     if (audioTracks.length === 0) {
-      setError("Microphone is not available.");
+      setError(
+        "Microphone is not available."
+      );
       return;
     }
 
@@ -138,11 +213,13 @@ function Interview({ config }) {
 
     recorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
-        audioChunksRef.current.push(event.data);
+        audioChunksRef.current.push(
+          event.data
+        );
       }
     };
 
-    recorder.onstop = () => {
+    recorder.onstop = async () => {
       const audioBlob = new Blob(
         audioChunksRef.current,
         {
@@ -150,17 +227,33 @@ function Interview({ config }) {
         }
       );
 
+      console.log(
+        "Answer recorded:",
+        audioBlob.size,
+        "bytes"
+      );
+
+      /*
+       * Send audio to Whisper
+       */
+      const text =
+        await transcribeAudio(audioBlob);
+
+      /*
+       * Save answer and transcript
+       */
       setRecordedAnswers((previous) => [
         ...previous,
         {
           question: currentQuestion,
           audio: audioBlob,
+          transcript: text,
         },
       ]);
 
       console.log(
-        "Answer recorded:",
-        audioBlob
+        "Answer transcript:",
+        text
       );
     };
 
@@ -170,6 +263,7 @@ function Interview({ config }) {
 
     setIsRecording(true);
     setError("");
+    setTranscript("");
   };
 
   /*
@@ -190,8 +284,15 @@ function Interview({ config }) {
    * Move to next question
    */
   const nextQuestion = () => {
-    if (questionIndex < interviewQuestions.length - 1) {
-      setQuestionIndex((previous) => previous + 1);
+    if (
+      questionIndex <
+      interviewQuestions.length - 1
+    ) {
+      setQuestionIndex(
+        (previous) => previous + 1
+      );
+
+      setTranscript("");
     }
   };
 
@@ -209,7 +310,7 @@ function Interview({ config }) {
     );
 
     alert(
-      "Interview completed. Audio answers have been recorded temporarily."
+      "Interview completed."
     );
 
     stopCamera();
@@ -228,7 +329,9 @@ function Interview({ config }) {
       videoTrack.enabled =
         !videoTrack.enabled;
 
-      setCameraOn(videoTrack.enabled);
+      setCameraOn(
+        videoTrack.enabled
+      );
     }
   };
 
@@ -245,7 +348,9 @@ function Interview({ config }) {
       audioTrack.enabled =
         !audioTrack.enabled;
 
-      setMicOn(audioTrack.enabled);
+      setMicOn(
+        audioTrack.enabled
+      );
     }
   };
 
@@ -398,6 +503,35 @@ function Interview({ config }) {
 
         </div>
 
+      )}
+
+      {/* Transcription status */}
+
+      {transcribing && (
+        <div className="transcript-box">
+
+          <p>
+            🎧 AI is converting your answer
+            to text...
+          </p>
+
+        </div>
+      )}
+
+      {/* Transcript */}
+
+      {transcript && !transcribing && (
+        <div className="transcript-box">
+
+          <h3>
+            Your Answer
+          </h3>
+
+          <p>
+            {transcript}
+          </p>
+
+        </div>
       )}
 
       {/* Next / Finish */}

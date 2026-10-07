@@ -224,3 +224,20 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
+
+.transcript-box {
+  width: min(900px, 90vw);
+  margin: 25px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.transcript-box h3 {
+  margin-top: 0;
+}
+
+.transcript-box p {
+  line-height: 1.6;
+}
