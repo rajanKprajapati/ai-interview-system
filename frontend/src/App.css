@@ -110,3 +110,117 @@ body {
   color: red;
   margin-bottom: 20px;
 }
+
+.setup-page {
+  min-height: 100vh;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.setup-page h1 {
+  margin-bottom: 10px;
+}
+
+.setup-section {
+  margin: 40px auto;
+  max-width: 600px;
+}
+
+.option-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.option-group button {
+  padding: 14px 25px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.option-group button.selected {
+  background: #222;
+  color: white;
+}
+
+.setup-section select {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.start-interview-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 17px;
+}
+/* Interview question */
+
+.question-card {
+  width: min(900px, 90vw);
+  margin: 0 auto 25px;
+  padding: 25px;
+
+  background: white;
+  border-radius: 12px;
+}
+
+.question-card h2 {
+  margin: 10px 0 0;
+  font-size: 24px;
+}
+
+.question-number {
+  color: #777;
+  font-size: 14px;
+}
+
+/* Answer controls */
+
+.answer-controls {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+.record-button,
+.stop-record-button {
+  padding: 14px 28px;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.record-button {
+  background: #222;
+  color: white;
+}
+
+.stop-record-button {
+  background: #c62828;
+  color: white;
+}
+
+/* Question navigation */
+
+.question-navigation {
+  margin-top: 20px;
+}
+
+.question-navigation button {
+  padding: 12px 25px;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
