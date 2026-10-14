@@ -1,0 +1,16 @@
+
+# Secrets
+backend/.env
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Frontend dependencies
+frontend/node_modules/
+
+# Environment folders
+.venv/
+venv/
