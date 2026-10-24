@@ -47,11 +47,68 @@ function Interview({ config }) {
 
   const [error, setError] = useState("");
 
-  const interviewQuestions =
-    questions[config?.type] || questions.technical;
+  const [interviewQuestions, setInterviewQuestions] = useState([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
 
-  const currentQuestion =
-    interviewQuestions[questionIndex];
+  const currentQuestion = interviewQuestions[questionIndex];
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchQuestions = async () => {
+      try {
+        setLoadingQuestions(true);
+        setError("");
+
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/questions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              interview_type: config?.type || "technical",
+              question_count: Number(config?.questionCount || 5),
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to generate interview questions.");
+        }
+
+      const data = await response.json();
+
+      if (!data.success || !Array.isArray(data.questions) || data.questions.length === 0) {
+        throw new Error("The AI did not return any questions.");
+      }
+
+      if (!cancelled) {
+        setInterviewQuestions(data.questions);
+        setQuestionIndex(0);
+      }
+    } catch (err) {
+      console.error("Question generation error:", err);
+
+      if (!cancelled) {
+        setError(
+          "Could not generate interview questions. Please try again."
+        );
+      }
+    } finally {
+      if (!cancelled) {
+        setLoadingQuestions(false);
+      }
+    }
+  };
+
+  fetchQuestions();
+
+  return () => {
+    cancelled = true;
+  };
+}, [config?.type, config?.questionCount]);
 
   /*
    * Start camera and microphone
@@ -384,21 +441,25 @@ function Interview({ config }) {
 
       {/* Question */}
 
-      <div className="question-card">
+      {loadingQuestions ? (
+        <div className="question-card">
+          <h2>Generating your interview questions...</h2>
+          <p>Please wait. This may take some time.</p>
+        </div>
+      ) : interviewQuestions.length > 0 ? (
+        <div className="question-card">
+          <p className="question-number">
+            Question {questionIndex + 1} of {interviewQuestions.length}
+          </p>
 
-        <p className="question-number">
-          Question {questionIndex + 1} of{" "}
-          {Math.min(
-            config?.questionCount || 5,
-            interviewQuestions.length
-          )}
-        </p>
-
-        <h2>
-          {currentQuestion}
-        </h2>
-
-      </div>
+          <h2>{currentQuestion}</h2>
+        </div>
+      ) : (
+        <div className="question-card">
+          <h2>Questions unavailable</h2>
+          <p>Please try starting the interview again.</p>
+        </div>
+      )}
 
       {/* Camera */}
 
@@ -536,7 +597,7 @@ function Interview({ config }) {
 
       {/* Next / Finish */}
 
-      {!isRecording && cameraOn && (
+      {!loadingQuestions && interviewQuestions.length > 0 && !isRecording && cameraOn && (
 
         <div className="question-navigation">
 

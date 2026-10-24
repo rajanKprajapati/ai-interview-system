@@ -1,51 +1,118 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 import os
 import tempfile
 
-from fastapi import UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+
+from ai_question_generator import generate_questions
 from speech_to_text import transcribe_audio
 
 
 app = FastAPI(
-    title="AI Interview Preparation & Evaluation System"
+    title="AI Interview Preparation & Evaluation System",
+    version="1.0.0"
 )
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-@app.get("/api/health")
-def health_check():
+class QuestionRequest(BaseModel):
+    interview_type: str = Field(
+        pattern="^(technical|hr|behavioral)$"
+    )
+
+    question_count: int = Field(
+        ge=1,
+        le=10
+    )
+
+
+@app.get("/")
+def root():
     return {
-        "status": "ok",
-        "message": "AI Interview System backend is running"
+        "success": True,
+        "message": "AI Interview System Backend is running"
     }
+
+
+@app.get("/api/health")
+def health():
+    return {
+        "success": True,
+        "status": "healthy"
+    }
+
+
+@app.post("/api/questions")
+def get_questions(request: QuestionRequest):
+
+    try:
+        questions = generate_questions(
+            request.interview_type,
+            request.question_count
+        )
+
+        if not questions:
+            raise HTTPException(
+                status_code=502,
+                detail="AI provider returned no questions."
+            )
+
+        return {
+            "success": True,
+            "interview_type": request.interview_type,
+            "question_count": len(questions),
+            "questions": questions
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        print("QUESTION GENERATION ERROR:", repr(e))
+
+        raise HTTPException(
+            status_code=502,
+            detail=f"Question generation failed: {str(e)}"
+        )
 
 
 @app.post("/api/transcribe")
 async def transcribe(file: UploadFile = File(...)):
-    if not file.filename:
-        raise HTTPException(
-            status_code=400,
-            detail="No audio file provided."
-        )
 
     temp_path = None
 
     try:
+
+        suffix = os.path.splitext(file.filename or "")[1]
+
+        if not suffix:
+            suffix = ".webm"
+
         audio_data = await file.read()
+
+        if not audio_data:
+            raise HTTPException(
+                status_code=400,
+                detail="Uploaded audio file is empty."
+            )
 
         with tempfile.NamedTemporaryFile(
             delete=False,
-            suffix=".webm"
+            suffix=suffix
         ) as temp_file:
+
             temp_file.write(audio_data)
             temp_path = temp_file.name
 
@@ -56,12 +123,22 @@ async def transcribe(file: UploadFile = File(...)):
             "transcript": transcript
         }
 
+    except HTTPException:
+        raise
+
     except Exception as e:
+
+        print("TRANSCRIPTION ERROR:", repr(e))
+
         raise HTTPException(
             status_code=500,
-            detail=str(e)
+            detail="Speech-to-text failed."
         )
 
     finally:
+
         if temp_path and os.path.exists(temp_path):
-            os.remove(temp_path)
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass

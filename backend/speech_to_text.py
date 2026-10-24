@@ -1,5 +1,6 @@
 from faster_whisper import WhisperModel
 
+
 print("Loading Whisper model...")
 
 model = WhisperModel(
@@ -12,14 +13,15 @@ print("Whisper model loaded.")
 
 
 def transcribe_audio(file_path):
+
     segments, info = model.transcribe(
         file_path,
         beam_size=5
     )
 
-    text = ""
+    text_parts = []
 
     for segment in segments:
-        text += segment.text + " "
+        text_parts.append(segment.text.strip())
 
-    return text.strip()
+    return " ".join(text_parts).strip()

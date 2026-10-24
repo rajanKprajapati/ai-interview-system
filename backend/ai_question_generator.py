@@ -1,51 +1,62 @@
 import os
-
 from dotenv import load_dotenv
 from google import genai
-
 
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    raise ValueError("GEMINI_API_KEY is not set in .env")
-
+    raise ValueError("GEMINI_API_KEY is not set in backend/.env")
 
 client = genai.Client(api_key=api_key)
 
 
-def generate_questions(interview_type, question_count):
-
+def generate_questions(interview_type: str, question_count: int):
     prompt = f"""
-You are an expert technical interviewer.
+You are an expert interview interviewer.
 
-Generate {question_count} realistic interview questions
-for a {interview_type} interview.
+Generate exactly {question_count} interview questions for a
+{interview_type} interview.
 
-The candidate is a B.Tech student and fresher.
+Candidate:
+- B.Tech student
+- Fresher
+- Preparing for campus placement
+
+Interview type: {interview_type}
 
 Rules:
-- Questions should be suitable for a fresher.
-- Questions should be realistic interview questions.
+- Questions must be realistic.
+- Questions must be suitable for a fresher.
 - Do not provide answers.
-- Return only the questions.
-- Put each question on a separate line.
+- Do not provide explanations.
 - Do not add numbering.
-- Do not add explanations.
+- Return exactly one question per line.
 """
 
-    interaction = client.interactions.create(
+    response = client.interactions.create(
         model="gemini-3.8-flash",
         input=prompt
     )
 
-    text = interaction.output_text.strip()
+    text = response.output_text.strip()
 
-    questions = [
-        line.strip()
-        for line in text.splitlines()
-        if line.strip()
-    ]
+    questions = []
 
-    return questions
+    for line in text.splitlines():
+        line = line.strip()
+
+        if not line:
+            continue
+
+        # Remove common numbering if Gemini adds it anyway.
+        if line[0:2].isdigit() and line[2:3] in [".", ")"]:
+            line = line[3:].strip()
+        elif len(line) >= 2 and line[0].isdigit() and line[1] in [".", ")"]:
+            line = line[2:].strip()
+
+        if line:
+            questions.append(line)
+
+    return questions[:question_count]
