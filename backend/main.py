@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from ai_question_generator import generate_questions
+from ai_evaluator import evaluate_answers
 from speech_to_text import transcribe_audio
 
 
@@ -38,6 +39,22 @@ class QuestionRequest(BaseModel):
     )
 
 
+class AnswerItem(BaseModel):
+    question: str = Field(
+        min_length=1
+    )
+
+    answer: str = Field(
+        min_length=1
+    )
+
+
+class EvaluationRequest(BaseModel):
+    answers: list[AnswerItem] = Field(
+        min_length=1
+    )
+
+
 @app.get("/")
 def root():
     return {
@@ -56,7 +73,6 @@ def health():
 
 @app.post("/api/questions")
 def get_questions(request: QuestionRequest):
-
     try:
         questions = generate_questions(
             request.interview_type,
@@ -80,7 +96,10 @@ def get_questions(request: QuestionRequest):
         raise
 
     except Exception as e:
-        print("QUESTION GENERATION ERROR:", repr(e))
+        print(
+            "QUESTION GENERATION ERROR:",
+            repr(e)
+        )
 
         raise HTTPException(
             status_code=502,
@@ -88,14 +107,51 @@ def get_questions(request: QuestionRequest):
         )
 
 
-@app.post("/api/transcribe")
-async def transcribe(file: UploadFile = File(...)):
+@app.post("/api/evaluate")
+def evaluate(request: EvaluationRequest):
+    try:
+        answers = [
+            {
+                "question": item.question,
+                "answer": item.answer
+            }
+            for item in request.answers
+        ]
 
+        evaluations = evaluate_answers(
+            answers
+        )
+
+        return {
+            "success": True,
+            "evaluations": evaluations
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        print(
+            "ANSWER EVALUATION ERROR:",
+            repr(e)
+        )
+
+        raise HTTPException(
+            status_code=502,
+            detail=f"Answer evaluation failed: {str(e)}"
+        )
+
+
+@app.post("/api/transcribe")
+async def transcribe(
+    file: UploadFile = File(...)
+):
     temp_path = None
 
     try:
-
-        suffix = os.path.splitext(file.filename or "")[1]
+        suffix = os.path.splitext(
+            file.filename or ""
+        )[1]
 
         if not suffix:
             suffix = ".webm"
@@ -116,7 +172,9 @@ async def transcribe(file: UploadFile = File(...)):
             temp_file.write(audio_data)
             temp_path = temp_file.name
 
-        transcript = transcribe_audio(temp_path)
+        transcript = transcribe_audio(
+            temp_path
+        )
 
         return {
             "success": True,
@@ -127,8 +185,10 @@ async def transcribe(file: UploadFile = File(...)):
         raise
 
     except Exception as e:
-
-        print("TRANSCRIPTION ERROR:", repr(e))
+        print(
+            "TRANSCRIPTION ERROR:",
+            repr(e)
+        )
 
         raise HTTPException(
             status_code=500,
@@ -136,9 +196,11 @@ async def transcribe(file: UploadFile = File(...)):
         )
 
     finally:
-
-        if temp_path and os.path.exists(temp_path):
+        if temp_path and os.path.exists(
+            temp_path
+        ):
             try:
                 os.remove(temp_path)
             except Exception:
                 pass
+

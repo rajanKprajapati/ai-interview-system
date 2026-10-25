@@ -13,34 +13,30 @@ client = genai.Client(api_key=api_key)
 
 
 def generate_questions(interview_type: str, question_count: int):
+
     prompt = f"""
-You are an expert interview interviewer.
+Generate exactly {question_count} interview questions for a {interview_type} interview.
 
-Generate exactly {question_count} interview questions for a
-{interview_type} interview.
+Candidate: B.Tech fresher preparing for campus placement.
 
-Candidate:
-- B.Tech student
-- Fresher
-- Preparing for campus placement
-
-Interview type: {interview_type}
-
-Rules:
-- Questions must be realistic.
-- Questions must be suitable for a fresher.
-- Do not provide answers.
-- Do not provide explanations.
-- Do not add numbering.
-- Return exactly one question per line.
+Return ONLY the questions, one per line.
+No numbering.
+No answers.
+No explanations.
 """
 
-    response = client.interactions.create(
-        model="gemini-3.8-flash",
-        input=prompt
+    response = client.models.generate_content(
+        model="gemini-3.5-flash-lite",
+        contents=prompt,
+        config={
+            "thinking_config": {
+                "thinking_level": "minimal"
+            },
+            "max_output_tokens": 300,
+        },
     )
 
-    text = response.output_text.strip()
+    text = response.text.strip()
 
     questions = []
 
@@ -50,13 +46,14 @@ Rules:
         if not line:
             continue
 
-        # Remove common numbering if Gemini adds it anyway.
-        if line[0:2].isdigit() and line[2:3] in [".", ")"]:
-            line = line[3:].strip()
-        elif len(line) >= 2 and line[0].isdigit() and line[1] in [".", ")"]:
+        # Remove numbering such as 1. or 1)
+        if len(line) >= 2 and line[0].isdigit() and line[1] in [".", ")"]:
             line = line[2:].strip()
 
         if line:
             questions.append(line)
+
+    if not questions:
+        raise ValueError("Gemini returned no questions.")
 
     return questions[:question_count]
