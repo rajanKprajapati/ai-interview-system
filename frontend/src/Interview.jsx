@@ -12,6 +12,7 @@ const SAMPLE_QUESTIONS = [
 ];
 
 
+
 const SAMPLE_EVALUATIONS = [
   {
     question_number: 1,
@@ -364,7 +365,7 @@ async function enableCameraAndMic() {
     }
   }
 
-  function saveCurrentAnswer() {
+    function saveCurrentAnswer() {
     const answer = currentAnswer.trim();
 
     if (!answer) {
@@ -393,36 +394,26 @@ async function enableCameraAndMic() {
     }
   }
 
-    async function finishInterview(finalAnswers) {
-    if (DEVELOPMENT_MODE) {
-      setEvaluating(true);
-      setStatus("evaluating");
-      setError("");
-
-      setTimeout(() => {
-        setEvaluations(
-          SAMPLE_EVALUATIONS.slice(
-            0,
-            finalAnswers.length
-          )
-        );
-
-        setStatus("results");
-        setEvaluating(false);
-
-        stopMediaStream();
-        setCameraEnabled(false);
-        setMicEnabled(false);
-        setRecording(false);
-      }, 700);
-
-      return;
-    }
-
+  async function finishInterview(finalAnswers) {
     try {
       setEvaluating(true);
       setStatus("evaluating");
       setError("");
+
+      const sampleEvaluations = SAMPLE_EVALUATIONS.slice(
+        0,
+        finalAnswers.length
+      );
+
+      const requestBody = DEVELOPMENT_MODE
+        ? {
+            answers: finalAnswers,
+            development_mode: true,
+            evaluations: sampleEvaluations,
+          }
+        : {
+            answers: finalAnswers,
+          };
 
       const response = await fetch(
         `${API_URL}/api/evaluate`,
@@ -431,9 +422,7 @@ async function enableCameraAndMic() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            answers: finalAnswers,
-          }),
+          body: JSON.stringify(requestBody),
         }
       );
 
@@ -451,7 +440,7 @@ async function enableCameraAndMic() {
         data.evaluations.length === 0
       ) {
         throw new Error(
-          "No evaluation was returned by the AI."
+          "No evaluation was returned."
         );
       }
 
@@ -462,6 +451,7 @@ async function enableCameraAndMic() {
       setCameraEnabled(false);
       setMicEnabled(false);
       setRecording(false);
+
     } catch (err) {
       console.error(err);
 
@@ -471,25 +461,10 @@ async function enableCameraAndMic() {
       );
 
       setStatus("error");
+
     } finally {
       setEvaluating(false);
     }
-  }
-
-  function restartInterview() {
-    stopMediaStream();
-
-    setQuestions([]);
-    setAnswers([]);
-    setCurrentAnswer("");
-    setCurrentQuestion(0);
-    setEvaluations([]);
-    setError("");
-    setCameraEnabled(false);
-    setMicEnabled(false);
-    setRecording(false);
-
-    generateQuestions();
   }
 
   function restartInterview() {
@@ -1250,7 +1225,6 @@ async function enableCameraAndMic() {
     </Page>
   );
 }
-
 function ScoreCard({ title, score }) {
   const numericScore = Number(score || 0);
 

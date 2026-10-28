@@ -1,3 +1,11 @@
+import json
+
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+from database import get_db
+from models import Interview, InterviewQuestion
+
 import os
 import tempfile
 
@@ -14,7 +22,6 @@ app = FastAPI(
     title="AI Interview Preparation & Evaluation System",
     version="1.0.0"
 )
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,9 +57,9 @@ class AnswerItem(BaseModel):
 
 
 class EvaluationRequest(BaseModel):
-    answers: list[AnswerItem] = Field(
-        min_length=1
-    )
+    answers: list[AnswerItem] = Field(min_length=1)
+    development_mode: bool = False
+    evaluations: list[dict] | None = None
 
 
 @app.get("/")
@@ -108,7 +115,10 @@ def get_questions(request: QuestionRequest):
 
 
 @app.post("/api/evaluate")
-def evaluate(request: EvaluationRequest):
+def evaluate(
+    request: EvaluationRequest,
+    db: Session = Depends(get_db)
+):
     try:
         answers = [
             {
@@ -118,12 +128,88 @@ def evaluate(request: EvaluationRequest):
             for item in request.answers
         ]
 
-        evaluations = evaluate_answers(
-            answers
+        # Development mode:
+        # Use frontend-provided sample evaluations.
+        # This avoids calling Gemini and consuming quota.
+        if request.development_mode:
+            if not request.evaluations:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Development mode requires evaluations."
+                )
+
+            evaluations = request.evaluations
+
+            if len(evaluations) != len(answers):
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"Expected {len(answers)} evaluations, "
+                        f"but received {len(evaluations)}."
+                    )
+                )
+
+        # Production mode:
+        # Ask Gemini to evaluate the answers.
+        else:
+            evaluations = evaluate_answers(answers)
+
+        # Calculate overall interview score
+        overall_scores = [
+            float(evaluation["overall_score"])
+            for evaluation in evaluations
+        ]
+
+        overall_score = round(
+            sum(overall_scores) / len(overall_scores),
+            2
         )
+
+        # Create interview record
+        interview = Interview(
+            interview_type="technical",
+            question_count=len(answers),
+            overall_score=overall_score
+        )
+
+        db.add(interview)
+        db.flush()
+
+        # Create question/evaluation records
+        for index, (answer, evaluation) in enumerate(
+            zip(answers, evaluations),
+            start=1
+        ):
+            question_record = InterviewQuestion(
+                interview_id=interview.id,
+                question_number=index,
+                question=answer["question"],
+                answer=answer["answer"],
+                relevance=evaluation["relevance"],
+                technical_accuracy=evaluation["technical_accuracy"],
+                communication=evaluation["communication"],
+                confidence=evaluation["confidence"],
+                overall_score=evaluation["overall_score"],
+                strengths=json.dumps(
+                    evaluation["strengths"]
+                ),
+                weaknesses=json.dumps(
+                    evaluation["weaknesses"]
+                ),
+                improvement_feedback=evaluation[
+                    "improvement_feedback"
+                ]
+            )
+
+            db.add(question_record)
+
+        db.commit()
+        db.refresh(interview)
 
         return {
             "success": True,
+            "interview_id": interview.id,
+            "overall_score": overall_score,
             "evaluations": evaluations
         }
 
@@ -131,13 +217,15 @@ def evaluate(request: EvaluationRequest):
         raise
 
     except Exception as e:
+        db.rollback()
+
         print(
-            "ANSWER EVALUATION ERROR:",
+            "ANSWER EVALUATION / DATABASE ERROR:",
             repr(e)
         )
 
         raise HTTPException(
-            status_code=502,
+            status_code=500,
             detail=f"Answer evaluation failed: {str(e)}"
         )
 
