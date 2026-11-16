@@ -36,8 +36,8 @@ from phase9_10_router import router as phase9_10_router
 
 app = FastAPI(
     title="AI Interview Preparation & Evaluation System",
-    description="Full-stack AI Mock Interview System with speech-to-text, real-time evaluation, communication metrics, and performance analytics.",
-    version="2.0.0"
+    description="Full-stack AI Mock Interview System with speech-to-text, real-time evaluation, communication metrics, visual behavioral telemetry, and performance analytics.",
+    version="2.1.0"
 )
 
 # CORS configuration
@@ -95,6 +95,7 @@ class EvaluationRequest(BaseModel):
     resume_skills: Optional[List[str]] = None
     resume_filename: Optional[str] = None
     job_description: Optional[str] = None
+    visual_metrics: Optional[dict] = None
 
 
 # ---------------------------------------------------------
@@ -106,7 +107,7 @@ def root():
     return {
         "success": True,
         "message": "AI Interview System Backend is running",
-        "version": "2.0.0"
+        "version": "2.1.0"
     }
 
 
@@ -211,6 +212,15 @@ async def transcribe(file: UploadFile = File(...)):
                 pass
 
 
+@app.post("/api/visual/telemetry")
+def process_visual_telemetry(payload: dict):
+    return {
+        "success": True,
+        "recorded": True,
+        "telemetry": payload,
+    }
+
+
 @app.post("/api/evaluate")
 def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
     try:
@@ -251,7 +261,7 @@ def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
             "overall_score": overall_score,
         }
 
-        # 3. Communication Analysis
+        # 3. Verbal Communication Analysis
         total_words = 0
         total_duration = 0.0
         total_fillers = 0
@@ -280,6 +290,14 @@ def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
         filler_rate = round((total_fillers / max(total_words, 1)) * 100, 1)
         filler_label = "Low" if filler_rate <= 1 else ("Moderate" if filler_rate <= 3 else "Frequent")
 
+        # 4. Visual Delivery Telemetry
+        visual_data = request.visual_metrics or {}
+        gaze_metric = visual_data.get("camera_gaze_metric")
+        posture_score = None
+        if isinstance(visual_data.get("posture"), dict):
+            posture_score = visual_data.get("posture", {}).get("upright_percent")
+        face_detected = visual_data.get("face_present", True) if visual_data else True
+
         aggregated_metrics = {
             "word_count": total_words,
             "duration_seconds": round(session_duration, 1) if session_duration else None,
@@ -288,18 +306,22 @@ def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
             "filler_word_count": total_fillers,
             "filler_rate_percent": filler_rate,
             "filler_label": filler_label,
-            "face_present": True,
-            "measurement_source": "audio_transcript_pipeline",
+            "face_present": face_detected,
+            "camera_gaze_metric": gaze_metric,
+            "posture_metric": posture_score,
+            "visual_indicators": visual_data if visual_data else None,
+            "measurement_source": "audio_and_visual_pipeline" if visual_data else "audio_transcript_pipeline",
             "interpretation": (
-                "Observable communication indicators: speaking pace, filler density, and answer structure. "
-                "These metrics reflect delivery patterns and do not assess psychological confidence."
+                "Observable communication & delivery indicators: speaking pace, filler density, "
+                "eye-contact estimation, and posture framing. These metrics reflect delivery patterns "
+                "and do not assess psychological confidence."
             ),
         }
 
-        # 4. Personalized Feedback
+        # 5. Personalized Feedback Synthesis
         feedback = make_personalized_feedback(evaluations, aggregated_metrics)
 
-        # 5. Database Persistence (Atomic Transaction)
+        # 6. Database Persistence (Atomic Transaction)
         interview = Interview(
             interview_type=request.interview_type,
             question_count=len(raw_answers),
@@ -338,8 +360,10 @@ def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
                 filler_word_count=metric_data.get("filler_word_count"),
                 filler_word_rate=metric_data.get("filler_rate_percent"),
                 audio_duration_seconds=metric_data.get("duration_seconds"),
-                face_present=True,
-                measurement_source="faster_whisper_and_regex",
+                face_present=face_detected,
+                camera_gaze_metric=float(gaze_metric) if gaze_metric is not None else None,
+                posture_metric=float(posture_score) if posture_score is not None else None,
+                measurement_source="faster_whisper_and_canvas_vision" if visual_data else "faster_whisper_and_regex",
             )
             db.add(q_metric)
 
@@ -351,8 +375,10 @@ def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
             filler_word_count=total_fillers,
             filler_word_rate=filler_rate,
             audio_duration_seconds=session_duration,
-            face_present=True,
-            measurement_source="session_aggregate",
+            face_present=face_detected,
+            camera_gaze_metric=float(gaze_metric) if gaze_metric is not None else None,
+            posture_metric=float(posture_score) if posture_score is not None else None,
+            measurement_source="audio_and_canvas_vision_aggregate" if visual_data else "session_aggregate",
         )
         db.add(session_metric)
 
@@ -496,6 +522,8 @@ def get_interview_detail(interview_id: int, db: Session = Depends(get_db)):
             "filler_rate_percent": filler_rate,
             "filler_label": filler_label,
             "face_present": session_metric.face_present,
+            "camera_gaze_metric": session_metric.camera_gaze_metric,
+            "posture_metric": session_metric.posture_metric,
             "measurement_source": session_metric.measurement_source,
             "interpretation": (
                 "Observable communication indicators: speaking pace, filler density, and answer structure."

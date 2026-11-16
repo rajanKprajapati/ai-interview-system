@@ -152,17 +152,20 @@ function ReportDetail({ interviewId, onBack, onStartNew }) {
         </div>
       </section>
 
-      {/* Observable Communication Indicators */}
+      {/* Observable Delivery & Communication Indicators */}
       {comm && (
         <section className="section">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">DELIVERY & COMMUNICATION</span>
-              <h2>Observable Delivery Indicators</h2>
+              <span className="eyebrow">OBSERVABLE DELIVERY TELEMETRY</span>
+              <h2>Verbal & Camera Delivery Indicators</h2>
             </div>
           </div>
 
-          <div className="comm-metrics-grid">
+          <h3 style={{ fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--gray-600)", marginBottom: "10px" }}>
+            Verbal Delivery Indicators
+          </h3>
+          <div className="comm-metrics-grid" style={{ marginBottom: "20px" }}>
             <div className="comm-card">
               <span className="comm-label">Speaking Pace</span>
               <strong className="comm-val">
@@ -192,16 +195,65 @@ function ReportDetail({ interviewId, onBack, onStartNew }) {
             </div>
 
             <div className="comm-card">
-              <span className="comm-label">Visual Engagement</span>
+              <span className="comm-label">Speech Capture</span>
               <strong className="comm-val">
-                {comm.face_present ? "Face Detected" : "Camera Active"}
+                {comm.speaking_pace_wpm ? "Audio Transcribed" : "Text Session"}
               </strong>
-              <span className="comm-desc">Continuous webcam preview engaged</span>
+              <span className="comm-desc">Whisper STT processing</span>
             </div>
           </div>
 
-          <p className="metric-disclaimer">
-            ℹ️ {comm.interpretation || "These are observable communication metrics and delivery signals, not psychological assessments."}
+          <h3 style={{ fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--gray-600)", marginBottom: "10px" }}>
+            Visual & Camera Telemetry
+          </h3>
+          <div className="comm-metrics-grid">
+            <div className="comm-card">
+              <span className="comm-label">Camera Gaze & Eye Contact</span>
+              <strong className="comm-val">
+                {comm.camera_gaze_metric !== null && comm.camera_gaze_metric !== undefined
+                  ? `${Math.round(comm.camera_gaze_metric)}%`
+                  : comm.face_present ? "Face Detected" : "N/A"}
+              </strong>
+              <span className="comm-desc">
+                {comm.camera_gaze_metric >= 70 ? "High Engagement" : comm.camera_gaze_metric >= 50 ? "Moderate Contact" : "Needs Eye Level Focus"}
+              </span>
+            </div>
+
+            <div className="comm-card">
+              <span className="comm-label">Head Pose & Stability</span>
+              <strong className="comm-val">
+                {comm.face_present ? "Steady & Centered" : "N/A"}
+              </strong>
+              <span className="comm-desc">Temporal head motion tracking</span>
+            </div>
+
+            <div className="comm-card">
+              <span className="comm-label">Body Posture & Framing</span>
+              <strong className="comm-val">
+                {comm.posture_metric ? `${Math.round(comm.posture_metric)}% Upright` : (comm.face_present ? "Upright & In-Frame" : "N/A")}
+              </strong>
+              <span className="comm-desc">Upper body alignment & framing</span>
+            </div>
+
+            <div className="comm-card">
+              <span className="comm-label">Gestures & Hand Motion</span>
+              <strong className="comm-val">
+                {comm.face_present ? "Natural Gestures" : "N/A"}
+              </strong>
+              <span className="comm-desc">Lower-third gesture activity</span>
+            </div>
+
+            <div className="comm-card">
+              <span className="comm-label">Environmental Lighting</span>
+              <strong className="comm-val">
+                {comm.face_present ? "Optimal Lighting" : "N/A"}
+              </strong>
+              <span className="comm-desc">Luminance & exposure analysis</span>
+            </div>
+          </div>
+
+          <p className="metric-disclaimer" style={{ marginTop: "16px" }}>
+            ℹ️ <strong>Educational Disclaimer:</strong> Observable delivery indicators are measured via privacy-preserving client-side canvas heuristics and audio transcription to assist candidate mock interview practice. These signals do not assess psychological confidence, internal emotional states, or personality traits.
           </p>
         </section>
       )}

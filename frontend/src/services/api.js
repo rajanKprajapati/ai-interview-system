@@ -63,6 +63,7 @@ export async function submitEvaluation({
   resumeSkills = null,
   resumeFilename = null,
   jobDescription = null,
+  visualMetrics = null,
 }) {
   const response = await fetch(`${API_BASE_URL}/api/evaluate`, {
     method: "POST",
@@ -78,6 +79,7 @@ export async function submitEvaluation({
       resume_skills: resumeSkills,
       resume_filename: resumeFilename,
       job_description: jobDescription,
+      visual_metrics: visualMetrics,
     }),
   });
   return handleResponse(response);

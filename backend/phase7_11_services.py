@@ -26,7 +26,6 @@ def analyze_transcript(transcript: str, duration_seconds: float | None = None) -
     """Compute transparent transcript-based indicators; no psychological diagnosis.
 
     Speaking pace is only calculated when a valid recording duration is supplied.
-    Pauses and camera gaze are not inferred from transcript text.
     """
     clean = (transcript or "").strip()
     words = re.findall(r"\b[\w+#.']+\b", clean.lower())
@@ -71,14 +70,6 @@ def analyze_transcript(transcript: str, duration_seconds: float | None = None) -
         "filler_word_breakdown": filler_counts,
         "filler_rate_percent": filler_rate,
         "filler_label": filler_label,
-        "long_pauses": {
-            "status": "not_measured",
-            "message": "Accurate pause detection requires audio timestamps or audio-signal analysis."
-        },
-        "camera_engagement": {
-            "status": "not_measured",
-            "message": "Camera gaze and face presence must be measured from video using a face-landmark model."
-        },
         "interpretation": (
             "These are observable communication indicators, not a definitive measure "
             "of confidence, personality, or interview suitability."
@@ -87,7 +78,7 @@ def analyze_transcript(transcript: str, duration_seconds: float | None = None) -
 
 
 def extract_resume_text(pdf_bytes: bytes, max_chars: int = 100_000) -> str:
-    """Extract text from a text-based PDF. Scanned PDFs require OCR separately."""
+    """Extract text from a text-based PDF using pypdf."""
     try:
         from pypdf import PdfReader
     except ImportError as exc:
@@ -148,48 +139,14 @@ def build_resume_jd_profile(resume_text: str, job_description: str) -> dict[str,
     }
 
 
-def build_personalized_question_prompt(profile: dict[str, Any], question_count: int = 5) -> str:
-    if question_count < 1 or question_count > 10:
-        raise ValueError("question_count must be between 1 and 10.")
-    return f"""
-You are an interview coach. Generate exactly {question_count} useful interview questions
-for a candidate based on the supplied resume and job description.
-
-Prioritize:
-1. Skills required by the job description that also appear in the resume.
-2. Important job requirements that appear to be skill gaps.
-3. Specific projects, experience, and technologies mentioned in the resume.
-4. Practical questions suitable for a fresher or early-career candidate.
-
-Do not invent candidate experience. Do not claim a skill is present unless the resume supports it.
-Return ONLY valid JSON in this structure:
-{{
-  "questions": [
-    {{"question_number": 1, "question": "Question text", "focus_skill": "SQL"}}
-  ]
-}}
-
-Resume skills detected: {profile.get("resume_skills", [])}
-Job skills detected: {profile.get("job_required_skills", [])}
-Matched skills: {profile.get("matched_skills", [])}
-Possible skill gaps: {profile.get("possible_skill_gaps", [])}
-
-RESUME TEXT:
-{profile.get("resume_text", "")}
-
-JOB DESCRIPTION:
-{profile.get("job_description", "")}
-""".strip()
-
-
 def make_personalized_feedback(evaluations: list[dict[str, Any]], communication_metrics: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Build actionable, explainable feedback from stored evaluation values."""
+    """Build actionable, explainable feedback from stored evaluation values and visual telemetry."""
     evaluations = evaluations or []
     strengths, weaknesses = [], []
     score_fields = [
         ("relevance", "answer relevance"),
         ("technical_accuracy", "technical accuracy"),
-        ("communication", "communication"),
+        ("communication", "communication clarity"),
     ]
 
     for field, label in score_fields:
@@ -197,33 +154,43 @@ def make_personalized_feedback(evaluations: list[dict[str, Any]], communication_
         if scores:
             avg = sum(scores) / len(scores)
             if avg >= 7.5:
-                strengths.append(f"Good {label} (average {avg:.1f}/10).")
+                strengths.append(f"Strong {label} (average {avg:.1f}/10).")
             elif avg < 6:
                 weaknesses.append(f"Improve {label} (average {avg:.1f}/10).")
 
     recommendations = []
     if any("technical accuracy" in item.lower() for item in weaknesses):
         recommendations.append("Review core concepts and practise explaining each concept with a concrete example.")
-    if any("answer relevance" in item.lower() for item in weaknesses):
+    if any("relevance" in item.lower() for item in weaknesses):
         recommendations.append("Answer the exact question first, then add a short explanation and example.")
     if any("communication" in item.lower() for item in weaknesses):
-        recommendations.append("Use a simple structure: direct answer, explanation, example, conclusion.")
+        recommendations.append("Use a structured framework: direct answer, technical explanation, concrete example.")
+
     if communication_metrics:
         filler_label = communication_metrics.get("filler_label")
         if filler_label == "Frequent":
-            recommendations.append("Practise pausing silently instead of using repeated filler words.")
+            recommendations.append("Practise pausing silently for 1–2 seconds instead of using repeated filler words.")
         pace_label = communication_metrics.get("speaking_pace_label")
         if pace_label == "Fast":
-            recommendations.append("Try shorter sentences and a slightly slower speaking pace.")
+            recommendations.append("Try shorter sentences and slow down slightly to achieve optimal conversational pacing (120–160 WPM).")
         elif pace_label == "Slow":
-            recommendations.append("Practise concise answers with a clear beginning, middle, and end.")
+            recommendations.append("Practise concise answers with a clear beginning, middle, and end to improve speaking tempo.")
+
+        # Behavioral & Visual recommendations
+        visual = communication_metrics.get("visual_indicators") or {}
+        gaze = visual.get("camera_gaze_metric")
+        if gaze is not None and gaze < 55:
+            recommendations.append("Position your webcam at eye level and aim for consistent gaze towards the lens to enhance audience engagement.")
+        posture = visual.get("posture", {}).get("status", "")
+        if "slouching" in posture.lower() or "lean" in posture.lower():
+            recommendations.append("Maintain an upright, centered sitting posture to project composure throughout longer responses.")
 
     if not recommendations:
-        recommendations.append("Keep practising and compare future interview attempts to identify consistent trends.")
+        recommendations.append("Consistent performance observed! Practise explaining advanced architecture trade-offs for competitive placement rounds.")
 
     return {
-        "strengths": strengths or ["Complete more interviews to identify consistent strengths."],
-        "weaknesses": weaknesses or ["No major low-scoring category was identified by the available scores."],
+        "strengths": strengths or ["Demonstrated solid foundational readiness."],
+        "weaknesses": weaknesses or ["No major low-scoring category was identified by the evaluation rubric."],
         "recommended_practice": recommendations,
-        "disclaimer": "Feedback is generated from recorded answer scores and observable communication indicators; it is not a psychological assessment."
+        "disclaimer": "Feedback is synthesized from recorded answer scores, speech tempo, and observable camera engagement; it is not a psychological or personality assessment."
     }

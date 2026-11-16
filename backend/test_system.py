@@ -124,7 +124,18 @@ def test_full_evaluation_and_db_persistence():
         ],
         "resume_skills": ["Python", "PostgreSQL", "FastAPI"],
         "resume_filename": "candidate_cv.pdf",
-        "job_description": "Backend Engineer with Python and PostgreSQL experience."
+        "job_description": "Backend Engineer with Python and PostgreSQL experience.",
+        "visual_metrics": {
+            "available": True,
+            "face_present": True,
+            "face_presence_percent": 95,
+            "camera_gaze_metric": 84.0,
+            "gaze_label": "High Engagement",
+            "head_pose": {"status": "Steady & Centered", "avg_motion": 12},
+            "posture": {"status": "Upright & In-Frame", "upright_percent": 90.0},
+            "hand_gestures": {"status": "Natural Hand Gestures", "avg_activity": 14},
+            "lighting": "Optimal Lighting",
+        }
     }
 
     r = client.post("/api/evaluate", json=payload)
@@ -136,6 +147,8 @@ def test_full_evaluation_and_db_persistence():
     assert res["overall_score"] == 8.9
     assert "relevance" in res["category_scores"]
     assert "speaking_pace_wpm" in res["communication_metrics"]
+    assert res["communication_metrics"]["camera_gaze_metric"] == 84.0
+    assert res["communication_metrics"]["posture_metric"] == 90.0
     assert len(res["personalized_feedback"]["strengths"]) > 0
     print(f"[PASS] Full evaluation and persistence verified: Session ID #{new_id}, Score={res['overall_score']}")
 
@@ -145,7 +158,9 @@ def test_full_evaluation_and_db_persistence():
     detail = r_detail.json()
     assert detail["interview_id"] == new_id
     assert len(detail["evaluations"]) == 2
-    print(f"[PASS] Interview detail retrieval verified: {len(detail['evaluations'])} questions confirmed")
+    assert detail["communication_metrics"]["camera_gaze_metric"] == 84.0
+    assert detail["communication_metrics"]["posture_metric"] == 90.0
+    print(f"[PASS] Interview detail retrieval verified: {len(detail['evaluations'])} questions, Gaze={detail['communication_metrics']['camera_gaze_metric']}%, Posture={detail['communication_metrics']['posture_metric']}%")
 
 def test_dashboard_stats():
     r = client.get("/api/dashboard/stats")

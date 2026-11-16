@@ -8,6 +8,7 @@ graph TD
         Nav["Navigation & State Shell (App.jsx)"]
         Setup["Interview Setup & PDF Upload (InterviewSetup.jsx)"]
         InterviewComp["Live Camera & Speech Interface (Interview.jsx)"]
+        CanvasVision["Client-Side Visual Telemetry (visualAnalysis.js)"]
         DashComp["Analytics Dashboard (Dashboard.jsx)"]
         HistComp["Session History (History.jsx)"]
         ReportComp["Report Inspector (ReportDetail.jsx)"]
@@ -44,6 +45,7 @@ graph TD
     Nav --> ReportComp
 
     Setup --> APIClient
+    InterviewComp --> CanvasVision
     InterviewComp --> APIClient
     DashComp --> APIClient
     HistComp --> APIClient
@@ -68,6 +70,7 @@ graph TD
 
 ## Architectural Highlights
 - **Decoupled Architecture**: The React SPA frontend communicates with the FastAPI backend solely via clean RESTful APIs.
+- **Client-Side Behavioral Telemetry**: Video frame sampling runs entirely client-side via HTML5 canvas heuristics (`visualAnalysis.js`), computing eye contact, head stability, and posture without transmitting video streams across the network.
 - **Local Speech Processing**: Audio transcription runs locally using `faster-whisper` on CPU int8, eliminating cloud STT fees and ensuring zero third-party audio transmission.
 - **Single-Transaction Persistence**: Each interview evaluation, along with its questions, metrics, and metadata, is committed in an atomic database transaction.
 - **Additive Migrations**: Alembic manages all database migrations additively to guarantee existing candidate records and reference dimensions are preserved.

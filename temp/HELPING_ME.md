@@ -1,11 +1,22 @@
 # Practical Student Guide & Viva Preparation Manual
-**AI Interview Preparation & Evaluation System**
+**AI Interview Preparation & Evaluation System**  
+**Student:** Rajan Kumar Prajapati  
+**Branch:** B.Tech — Computer Science & Engineering (Artificial Intelligence)  
+**Institution:** Bansal Institute of Engineering & Technology, Lucknow  
+**Session:** 2025–2026  
 
 ---
 
 ## 1. Quick Start: How to Run the Project
 
-### Terminal 1: Start Backend (FastAPI + PostgreSQL)
+### Option A: One-Click Launch (Recommended)
+Double-click `START_PROJECT.bat` in the project root.  
+This automatically validates Python and Node.js, launches the FastAPI backend on `http://127.0.0.1:8000`, and opens the React web app on `http://localhost:5173`.  
+To stop services cleanly, run `STOP_PROJECT.bat`.
+
+### Option B: Manual Terminal Execution
+
+#### Terminal 1: Start Backend (FastAPI + PostgreSQL)
 ```powershell
 cd C:\Users\Lenovo\OneDrive\Desktop\ai-interview-system\backend
 # Activate your python environment if using venv
@@ -15,7 +26,7 @@ uvicorn main:app --reload --port 8000
 - The backend will start on `http://127.0.0.1:8000`.
 - Verify by opening `http://127.0.0.1:8000/docs` in your browser.
 
-### Terminal 2: Start Frontend (React + Vite)
+#### Terminal 2: Start Frontend (React + Vite)
 ```powershell
 cd C:\Users\Lenovo\OneDrive\Desktop\ai-interview-system\frontend
 npm run dev
@@ -163,6 +174,24 @@ We use Alembic, SQLAlchemy's migration tool. We follow an additive migration str
 ### Q6: How does the Resume & Job Description personalization work?
 **Answer:**  
 When a candidate uploads a PDF resume, `pypdf` extracts the raw text in memory. The backend scans the text against technology keywords to build a candidate skill profile. If a Job Description is provided, the system computes skill overlap and identifies skill gaps. These skills and gaps are then injected into the Gemini prompt so the AI generates targeted questions testing both verified competencies and potential gap areas.
+
+### Q7: How does the camera-based behavioral analysis work? Does it stream video to an external server?
+**Answer:**  
+No video is ever recorded, saved, or streamed to any external cloud server. The camera analysis runs entirely client-side inside the candidate's browser using HTML5 Canvas (`visualAnalysis.js`). At 400 millisecond intervals (2.5 FPS), downscaled frames are sampled to compute:
+1. **Camera Gaze & Eye Contact**: Measures upper-center facial skin distribution to detect whether the candidate is looking toward the webcam lens.
+2. **Head Pose Stability**: Uses temporal frame differencing in the upper bounding region to quantify head restlessness versus steady posture.
+3. **Body Posture & Framing**: Evaluates vertical center-of-mass to detect slouching or leaning.
+4. **Lighting Quality**: Calculates average luminance across pixels to alert if lighting is too dim or has glare.
+Only aggregated statistical metrics (e.g., 84% gaze engagement, upright posture) are sent with the evaluation payload to be stored in PostgreSQL.
+
+### Q8: What prevents your system from producing 'fake' or hardcoded scores?
+**Answer:**  
+In production mode, our system strictly enforces real backend API execution:
+- Questions are generated dynamically by Google Gemini (`gemini-3.5-flash-lite`).
+- Speech is transcribed using the local neural network `faster-whisper`.
+- Answer evaluation runs through a multi-dimensional Gemini scoring rubric with Pydantic JSON schema validation.
+- All scores, telemetry, and candidate session records are transactionally committed to a live PostgreSQL relational database.
+- We have an automated test suite (`backend/test_system.py`) that tests all pathways without dummy placeholders.
 
 ---
 

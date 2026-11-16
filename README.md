@@ -1,6 +1,31 @@
 # AI Interview Preparation & Evaluation System
 
-An enterprise-grade, full-stack AI Mock Interview platform designed to help students and candidates practice Technical, HR, and Behavioral interviews with realistic camera and microphone simulations, speech-to-text transcription, Gemini-powered answer evaluation, observable delivery metrics, and an integrated performance dashboard backed by PostgreSQL.
+**B.Tech Mini Project — Computer Science & Engineering (Artificial Intelligence)**  
+**Student:** Rajan Kumar Prajapati  
+**Institution:** Bansal Institute of Engineering & Technology, Lucknow  
+**Session:** 2025–2026  
+
+An enterprise-grade, full-stack AI Mock Interview platform designed to help students and candidates practice Technical, HR, and Behavioral interviews with realistic camera and microphone simulations, local neural speech-to-text transcription, Gemini-powered answer evaluation, observable delivery metrics, client-side computer vision behavioral telemetry, and an integrated performance dashboard backed by PostgreSQL.
+
+---
+
+## ⚡ One-Click Standalone Launch
+
+For local execution without manual commands, use the included Windows batch scripts in the project root:
+
+- **Launch Entire System (Backend + Frontend):** Double-click `START_PROJECT.bat`
+- **Stop All System Services:** Double-click `STOP_PROJECT.bat`
+- **Launch Backend Only:** Double-click `START_BACKEND.bat`
+- **Launch Frontend Only:** Double-click `START_FRONTEND.bat`
+- **Detailed Step-by-Step Guide:** See [`RUN_GUIDE.md`](./RUN_GUIDE.md)
+- **Examination Slide Content:** See [`PRESENTATION_CONTENT.md`](./PRESENTATION_CONTENT.md)
+
+| Service | Local URL | Documentation / Notes |
+| :--- | :--- | :--- |
+| **Frontend Web App** | [http://localhost:5173](http://localhost:5173) | React 19 + Vite SPA |
+| **Backend API** | [http://127.0.0.1:8000](http://127.0.0.1:8000) | FastAPI + Uvicorn |
+| **Interactive Docs (Swagger)** | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | Interactive API exploration |
+| **Health Check Endpoint** | [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health) | Database & system health check |
 
 ---
 
