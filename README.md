@@ -7,7 +7,7 @@
 
 An enterprise-grade, full-stack AI Mock Interview platform designed to help students and candidates practice Technical, HR, and Behavioral interviews with realistic camera and microphone simulations, local neural speech-to-text transcription, Gemini-powered answer evaluation, observable delivery metrics, client-side computer vision behavioral telemetry, and an integrated performance dashboard backed by PostgreSQL.
 
----
+<!-- ---
 
 ## ⚡ One-Click Standalone Launch
 
@@ -18,7 +18,7 @@ For local execution without manual commands, use the included Windows batch scri
 - **Launch Backend Only:** Double-click `START_BACKEND.bat`
 - **Launch Frontend Only:** Double-click `START_FRONTEND.bat`
 - **Detailed Step-by-Step Guide:** See [`RUN_GUIDE.md`](./RUN_GUIDE.md)
-- **Examination Slide Content:** See [`PRESENTATION_CONTENT.md`](./PRESENTATION_CONTENT.md)
+- **Examination Slide Content:** See [`PRESENTATION_CONTENT.md`](./PRESENTATION_CONTENT.md) -->
 
 | Service | Local URL | Documentation / Notes |
 | :--- | :--- | :--- |
