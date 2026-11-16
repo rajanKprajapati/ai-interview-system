@@ -1,16 +1,24 @@
 from logging.config import fileConfig
+from pathlib import Path
+import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
 from dotenv import load_dotenv
-import os
+
+ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=ENV_PATH)
 
 from database import Base
-from models import Interview, InterviewQuestion
-
-load_dotenv()
+from models import (
+    Interview,
+    InterviewQuestion,
+    CommunicationMetric,
+    ResumeRecord,
+    JobDescriptionRecord,
+)
 
 config = context.config
 
@@ -55,10 +63,10 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-        connection=connection,
-        target_metadata=target_metadata,
-        include_object=include_object,
-)
+            connection=connection,
+            target_metadata=target_metadata,
+            include_object=include_object,
+        )
 
         with context.begin_transaction():
             context.run_migrations()

@@ -5,3 +5,7 @@ python-dotenv
 google-genai
 faster-whisper
 pydantic
+sqlalchemy
+alembic
+psycopg2
+pypdf
