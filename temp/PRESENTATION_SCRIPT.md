@@ -1,178 +1,250 @@
-# College Hackathon & Project Defense Presentation Script
+# College Presentation Speaking Script
 ## AI Interview Preparation & Evaluation System
 
-**Candidate / Presenter:** Rajan Kumar Prajapati  
-**Branch:** B.Tech — Computer Science & Engineering (Artificial Intelligence)  
-**Institution:** Bansal Institute of Engineering & Technology, Lucknow  
-**Session:** 2025–2026  
+**Project Title:** AI Interview Preparation & Evaluation System  
 **Presentation Deck:** `AI_Interview_System_Presentation.pptx` (8 Slides)  
-**Total Target Duration:** 7–9 Minutes (approx. 1 minute per slide + demo/Q&A)
+**Total Target Time:** 7 to 9 Minutes (~1 minute per slide + Demo / Q&A)  
+**Language:** Simple, clear, and confident English  
 
 ---
 
-## 🎯 Executive Presentation Strategy (Hackathon Style)
+### Project Team Members:
+1. **Rajan Kumar Prajapati**
+2. **Dhruv Maurya**
+3. **Saloni**
+4. **Harsh Gupta**
 
-- **Tone:** Confident, energetic, product-focused, and technically grounded. Speak like a startup founder or lead product engineer pitching an innovative solution, not a student reading textbook definitions.
-- **Pacing:** Aim for 130–150 words per minute. Pause for 1–2 seconds after key impact statements.
-- **Body Language:** Look directly at the examination panel. Point to the genuine UI screenshots and data flow charts on the screen.
-- **Key Message:** *"We built an autonomous, privacy-preserving AI mentor that solves placement anxiety with real engineering—combining Google Gemini, local Whisper speech-to-text, client-side computer vision heuristics, and PostgreSQL."*
+**Institution:** Bansal Institute of Engineering & Technology, Lucknow (AKTU Code: 422)  
+**Department:** Computer Science & Engineering (Artificial Intelligence)  
+**Academic Year:** 2025–2026  
 
 ---
 
-## Slide 1: Introduction & Title
+## 💡 Quick Tips for a Great Presentation
+
+1. **Speak Slowly and Clearly:** Keep your speaking speed around 130 to 140 words per minute. Do not rush.
+2. **Look at the Audience:** Make eye contact with your teachers and external examiners.
+3. **Point to the Screen:** When discussing Slide 4 (Workflow) and Slide 6 (Demo Screenshots), physically gesture to the screen to show that you built a real working system.
+4. **Keep Sentences Short:** Simple English sounds confident, natural, and professional.
+5. **Team Coordination:** If presenting as a team, clearly introduce who is speaking for which section.
+
+---
+
+## Slide 1: Introduction
+
 **Slide Title:** *AI Interview Preparation & Evaluation System*  
-**Key Visual:** Project Title Banner, Academic Metadata, and Live Webcam UI Screenshot.
+**Key Visual:** Project Title, College Details, Team Members List, and Live Camera Interview Screenshot.  
+**Target Duration:** 50–60 Seconds  
 
-### 🎙️ Spoken Script (45–60 Seconds)
-> "Respected external examiner, Head of Department, and faculty members. Good morning. 
-> 
-> My name is **Rajan Kumar Prajapati**, and I am a final-year B.Tech student in Computer Science & Engineering with specialization in Artificial Intelligence at **Bansal Institute of Engineering & Technology, Lucknow**.
-> 
-> Today, I am excited to present our college mini-project: the **'AI Interview Preparation & Evaluation System'**.
-> 
-> Over 80% of engineering graduates face intense anxiety and unexpected rejections during campus placement drives. The issue isn't that students don't know computer science theory—it's that they lack realistic, objective, and judgment-free practice. 
-> 
-> To solve this, we engineered a full-stack, multi-modal web platform that simulates realistic video mock interviews. It listens to candidate answers with local neural speech recognition, analyzes non-verbal delivery signals in the browser, grades responses across an objective four-pillar rubric using Google Gemini, and tracks performance over time in a persistent PostgreSQL database.
-> 
-> Let us look at the exact problem we set out to solve."
+### 🎙️ What You Should Say:
 
----
-
-## Slide 2: Problem & Our Solution
-**Slide Title:** *Bridging the College-to-Corporate Placement Gap*  
-**Key Visual:** Two-Column Comparison Card (Red 'Traditional Preparation' vs. Green 'AI Solution').
-
-### 🎙️ Spoken Script (50–60 Seconds)
-> "If you look at the left side of this slide, traditional interview preparation has four critical flaws:
-> 
-> First, **peer mock interviews are subjective**. Classmates cannot provide deep technical rubrics or consistent scoring.
-> 
-> Second, **verbal deficiencies go unnoticed**. Candidates are unaware that they speak at an erratic 190 words per minute or repeat filler words like *'um'* and *'basically'* twenty times in a single answer.
-> 
-> Third, **camera presence is overlooked**. In modern virtual campus drives, candidates frequently look away from the webcam or slouch, resulting in silent rejection.
-> 
-> And fourth, **commercial platforms are expensive**—charging upwards of ₹10,000 a month.
-> 
-> On the right side is our solution: an autonomous, always-available platform. It provides **multi-axis AI scoring** across technical accuracy and relevance; **deterministic speech pacing** that benchmarks speaking tempo against corporate standards; **client-side behavioral telemetry** for eye-gaze and posture; and **complete, zero-cost accessibility** on any student laptop."
+> "Respected external examiner, Head of Department, and teachers. Good morning.
+>
+> My name is **Rajan Kumar Prajapati**, and along with my team members **Dhruv Maurya**, **Saloni**, and **Harsh Gupta**, we are final year students of Computer Science & Engineering with specialization in Artificial Intelligence at **Bansal Institute of Engineering & Technology, Lucknow**.
+>
+> Today, we are proud to present our college mini project: the **'AI Interview Preparation & Evaluation System'**.
+>
+> Getting placed in a good company is the primary goal of every engineering student. However, many students face intense fear, nervousness, and lack of guidance when facing job interviews.
+>
+> To solve this problem, we developed a complete web application that acts as a personal AI interview coach. It simulates realistic video interviews using your webcam and microphone, transcribes spoken answers into text directly on your laptop, and evaluates your responses using Google Gemini AI.
+>
+> It provides instant, objective feedback on technical accuracy and communication delivery so that students can practice anytime and enter campus placement drives with complete confidence.
+>
+> Let us look at the real-world problems that inspired this project."
 
 ---
 
-## Slide 3: Key Features
-**Slide Title:** *Engineered for Real-World Placement Success*  
-**Key Visual:** 6 Feature Cards with vibrant accent icons.
+## Slide 2: Problem Statement
 
-### 🎙️ Spoken Script (55–65 Seconds)
-> "Our system delivers six core, production-verified features:
-> 
-> 1. **Dynamic AI Questions:** The system generates technical, behavioral STAR-method, and system design questions adapted to Beginner, Intermediate, and Advanced tiers.
-> 2. **Resume & Job Description Skill Matching:** Candidates can upload a PDF resume. Our `pypdf` pipeline extracts technical competencies, compares them against the job description, and targets candidate skill gaps during the interview.
-> 3. **Local Neural Speech-to-Text:** Using `faster-whisper` quantized to 8-bit integers on standard CPU, audio is transcribed in under 3 seconds with zero cloud audio leakage.
-> 4. **Camera Behavioral Telemetry:** Browser-side canvas heuristics quantify eye-gaze engagement, head pose stability, posture, and room lighting.
-> 5. **Multi-Pillar Scoring Rubrics:** Responses are graded from 0 to 10 on Relevance, Accuracy, Communication, and Confidence, paired with actionable improvement advice.
-> 6. **Performance Dashboard & History:** Every session is permanently stored in PostgreSQL, allowing students to visualize their score progress over time."
+**Slide Title:** *Problem Statement*  
+**Key Visual:** Left side shows 5 common student problems. Right side shows reliable industry statistics.  
+**Target Duration:** 55–65 Seconds  
 
----
+### 🎙️ What You Should Say:
 
-## Slide 4: How the System Works
-**Slide Title:** *End-to-End Candidate Practice Lifecycle*  
-**Key Visual:** 5-Step Linear Process Pipeline (01 to 05) with bottom performance pill.
-
-### 🎙️ Spoken Script (55–65 Seconds)
-> "This slide illustrates the seamless end-to-end architecture of our application.
-> 
-> - **In Step 1**, the candidate selects their target role—such as Full Stack Developer or Data Analyst—and uploads their PDF resume.
-> - **In Step 2**, Google Gemini receives this context and generates tailored questions designed specifically to probe the candidate's verified skills and missing gaps.
-> - **In Step 3**, the candidate enters the live interview room. WebRTC streams the camera feed while the browser canvas samples downscaled frames at 2.5 frames per second to track gaze and posture.
-> - **In Step 4**, as the student speaks, `faster-whisper` converts their voice into text on the CPU while our deterministic communication engine measures speaking pace in words per minute.
-> - **Finally, in Step 5**, Gemini scores the transcript against our multi-pillar rubric, and the entire session is committed in an atomic PostgreSQL transaction.
-> 
-> Notice that the total response evaluation latency is under 3.5 seconds, and zero video frames are ever sent over the network."
+> "When preparing for campus placements, college students face several major challenges:
+>
+> 1. **Lack of Regular Practice:** Colleges have hundreds of graduating students. It is practically impossible for teachers to conduct regular one-on-one mock interviews for everyone.
+> 2. **Fear of Speaking:** Many students understand programming and core concepts, but freeze up or get nervous when speaking in English before an interviewer.
+> 3. **Difficulty Identifying Mistakes:** When practicing alone in front of a mirror, a student cannot tell whether their answer was technically complete, structured, or clear.
+> 4. **No Communication Feedback:** Students are unaware of bad speaking habits—such as speaking too fast, taking long awkward pauses, or repeating filler words like *'um'*, *'uh'*, and *'basically'*.
+> 5. **High Commercial Costs:** Professional interview coaching services charge between ₹5,000 to ₹15,000 per month, which most college students cannot afford.
+>
+> These problems are supported by reliable industry reports:
+> - According to the **Wheebox India Skills Report 2024**, over **48%** of Indian graduates lack job-ready employability skills—primarily in communication and technical articulation.
+> - The **National Employability Study by Aspiring Minds / SHL** reports that only about **20%** of engineers are ready for software roles directly, with spoken English being a top reason for rejection.
+> - Furthermore, placement observations show that over **65%** of rejections in first-round interviews occur due to nervous communication delivery rather than a lack of basic subject knowledge.
+>
+> Our project directly solves these problems."
 
 ---
 
-## Slide 5: Technology Stack
-**Slide Title:** *Production-Grade, Modular Technology Stack*  
-**Key Visual:** 6 Domain Architecture Cards (Frontend, Backend, Database, LLM, Speech, Vision).
+## Slide 3: Our Proposed Solution
 
-### 🎙️ Spoken Script (50–60 Seconds)
-> "Every technology on this slide is genuinely implemented and verified in our codebase:
-> 
-> - **On the Frontend:** We built a high-performance Single Page Application using **React 19** and **Vite 8**, styled with custom CSS variables to avoid heavy third-party UI dependencies.
-> - **On the Backend:** We use **FastAPI** running on Python 3.13 with Uvicorn ASGI server and Pydantic v2 for strict type safety.
-> - **For the Database:** We chose **PostgreSQL 16** with **SQLAlchemy 2.0** and **Alembic** additive migrations, guaranteeing zero data loss.
-> - **For Generative AI:** We integrate Google's latest **`gemini-3.5-flash-lite`** model via the official `google-genai` SDK for low-latency question generation and rubric evaluation.
-> - **For Speech Recognition:** We run **`faster-whisper`** locally on the CPU with 8-bit quantization, eliminating cloud transcription costs and protecting student privacy.
-> - **And for Vision & Documents:** We use **HTML5 Canvas** pixel differencing for real-time telemetry and **`pypdf`** for in-memory resume parsing."
+**Slide Title:** *Our Proposed Solution*  
+**Key Visual:** 6 Clean Feature Cards showing the core capabilities.  
+**Target Duration:** 50–60 Seconds  
 
----
+### 🎙️ What You Should Say:
 
-## Slide 6: Actual Project Demonstration
-**Slide Title:** *Actual Working Interface in Action*  
-**Key Visual:** 4 High-Resolution Screenshots of the running application.
-
-### 🎙️ Spoken Script (60–75 Seconds)
-> *(Point directly to the four screenshots on the slide)*
-> 
-> "Here you can see the actual working application captured directly from our running system:
-> 
-> - **Top-Left (Screen 1):** Shows our **Interview Setup screen**. Candidates select their role, difficulty, question count, and upload their resume. You can see the extracted skill badges and matched competencies.
-> - **Top-Right (Screen 2):** Shows the **Live Mock Interview screen**. On the left is the AI question prompt and voice recording controls; on the right is the active WebRTC camera preview with real-time hardware status indicators.
-> - **Bottom-Left (Screen 3):** Shows the **Comprehensive Performance Report**. Notice the overall score of **8.9 out of 10**, the four competency progress bars, verbal delivery metrics showing **140 Words Per Minute**, and our camera telemetry showing **84% eye contact** and **90% upright posture**.
-> - **Bottom-Right (Screen 4):** Shows the **Candidate Dashboard**. It tracks overall practice hours, average scores, chronological score trends, and allows one-click drilldowns into past sessions."
+> "Our proposed solution is an automated, accessible, and private AI mock interview system. It gives every student a 24/7 personal interview coach at zero cost.
+>
+> Here are the six main features of our system:
+>
+> 1. **AI-Generated Questions:** Google Gemini generates dynamic, role-tailored questions for Technical, HR, and Behavioral rounds, matching the student's chosen difficulty level.
+> 2. **Camera-Based Mock Interviews:** The in-browser camera preview simulates a real corporate video call, encouraging professional posture and eye contact.
+> 3. **Local Speech Recognition:** Spoken answers are converted to text locally on the laptop using `faster-whisper`. Student audio never leaves the computer, ensuring 100% privacy and zero cloud fees.
+> 4. **AI-Based Answer Evaluation:** Gemini evaluates every answer across four key dimensions: Relevance, Technical Accuracy, Communication Clarity, and Delivery Confidence on a 0 to 10 scale.
+> 5. **Communication Analysis:** The system automatically calculates speaking speed in Words Per Minute and counts nervous filler words.
+> 6. **Personalized Feedback Reports:** Immediately after the interview, the student receives a detailed report showing strengths, weaknesses, and clear tips to improve."
 
 ---
 
-## Slide 7: Results, Impact & Future Scope
-**Slide Title:** *Measurable Value & Future Enhancements*  
-**Key Visual:** Two High-Impact Columns (Verified Impact vs. Future Roadmap).
+## Slide 4: How Our System Works
 
-### 🎙️ Spoken Script (50–60 Seconds)
-> "What are the tangible outcomes of this system?
-> 
-> First, it provides **immediate delivery diagnostics**—alerting students if they speak too fast, too slow, or use excessive filler words.
-> Second, it provides **targeted technical revision** by probing exact resume skill gaps rather than generic trivia.
-> Third, it **eliminates interview anxiety** through unlimited private practice.
-> And fourth, it offers **privacy by design**—voice is processed locally, and video never leaves browser memory.
-> 
-> Looking to the future, we have a clear engineering roadmap:
-> 1. Integrating the **Gemini Live Audio API** for natural conversational interruptions and live interviewer follow-ups.
-> 2. Embedding an in-browser **Monaco coding sandbox** for live algorithm execution.
-> 3. Building an **Institutional Training & Placement Portal** so college placement officers can assign interview batches and export readiness reports.
-> 4. And adding **Client WebAssembly FaceMesh** for micro-expression feedback."
+**Slide Title:** *How Our System Works*  
+**Key Visual:** 7-Step sequential user journey flow diagram.  
+**Target Duration:** 60–70 Seconds  
+
+### 🎙️ What You Should Say:
+
+> *(Point to the seven steps on the slide as you speak)*
+>
+> "This slide illustrates the complete, step-by-step user journey in our system:
+>
+> - **In Step 1:** The student selects their interview type—Technical or HR—chooses their target job role, like Full Stack Developer or Data Analyst, and picks a difficulty level. They can also upload their resume PDF for skill matching.
+> - **In Step 2:** Google Gemini AI reads these parameters and generates customized interview questions targeting the candidate's exact role and skill gaps.
+> - **In Step 3:** The candidate enters the live interview room. The webcam and microphone turn on, creating a realistic interview environment.
+> - **In Step 4:** The student clicks record and speaks their answer. As soon as they stop, `faster-whisper` transcribes the voice into clean text in under 3 seconds.
+> - **In Step 5:** The text answer is evaluated by Google Gemini against our four-pillar rubric, checking technical depth and correctness.
+> - **In Step 6:** The communication engine measures speaking speed in Words Per Minute, counts filler words, and checks camera engagement.
+> - **Finally, in Step 7:** The student receives an instant performance report with detailed advice, and all data is permanently saved in our PostgreSQL database for future review.
+>
+> The entire evaluation pipeline takes under 3.5 seconds, providing an effortless practice experience."
+
+---
+
+## Slide 5: Key Features & Technology
+
+**Slide Title:** *Key Features & Technology*  
+**Key Visual:** 6 Technology Cards explaining Frontend, Backend, Database, Speech, AI, and Vision.  
+**Target Duration:** 50–60 Seconds  
+
+### 🎙️ What You Should Say:
+
+> "Every technology listed on this slide is actively implemented and verified in our project codebase:
+>
+> - **React 19 on Frontend:** We used the latest React 19 with Vite to build a fast, single-page application. Students can seamlessly navigate between setup, the live interview, and the analytics dashboard without page reloads.
+> - **FastAPI on Backend:** We chose FastAPI in Python for its high performance, automatic API documentation, and strict data validation using Pydantic.
+> - **PostgreSQL Database:** All sessions, questions, transcripts, and evaluation metrics are permanently stored in a relational PostgreSQL database with Alembic migrations to ensure data safety.
+> - **faster-whisper for Speech-to-Text:** We run the OpenAI Whisper base model locally on the laptop CPU using 8-bit quantization. This gives sub-3-second transcription speed without sending voice data to any external server.
+> - **Google Gemini AI:** We utilize the official `google-genai` SDK with `gemini-3.5-flash-lite` for role-adaptive questions and structured answer scoring.
+> - **Browser-Based Camera Analysis:** Using lightweight HTML5 canvas frame differencing, the system checks eye contact, head stability, and posture in the browser without sending heavy video over the internet.
+>
+> This architecture is modern, modular, and 100% functional."
+
+---
+
+## Slide 6: Working Application Demo
+
+**Slide Title:** *Working Application Demo*  
+**Key Visual:** 4 Authentic High-Resolution Screenshots of the actual working system.  
+**Target Duration:** 60–75 Seconds  
+
+### 🎙️ What You Should Say:
+
+> *(Point to each of the four screenshots on the slide)*
+>
+> "Here are actual screenshots captured directly from our running project and database:
+>
+> - **Top-Left (Screen 1):** This is the **Interview Setup screen**. Students choose their job role, difficulty tier, and question count. When a resume PDF is uploaded, our `pypdf` parser automatically extracts technical skills and matches them against job requirements.
+> - **Top-Right (Screen 2):** This is the **Live Mock Interview screen**. On the left, you can see the active interview question with STAR-technique answering tips. On the right is the live webcam preview with active microphone controls.
+> - **Bottom-Left (Screen 3):** This is the **Detailed Performance Report**. Notice the real evaluation scores: an overall score of **8.9 out of 10**, an ideal speaking pace of **140 Words Per Minute**, a low filler density of **1.8%**, and visual indicators showing **84% camera gaze** and **90% posture alignment**.
+> - **Bottom-Right (Screen 4):** This is the **Candidate Dashboard**. It tracks practice hours, average scores across past sessions, and displays a chronological trendline so students can see their skills improve over time."
+
+---
+
+## Slide 7: Results, Benefits & Future Scope
+
+**Slide Title:** *Results, Benefits & Future Scope*  
+**Key Visual:** 3 Clear Vertical Columns: Actual Results, Practical Benefits, and Future Scope.  
+**Target Duration:** 55–65 Seconds  
+
+### 🎙️ What You Should Say:
+
+> "This slide summarizes our verified results, practical benefits, and future engineering roadmap:
+>
+> **First, Actual Results:**
+> In our verified test runs, our system achieved an overall score of **8.9 out of 10** for technical answers. The speaking pace was measured at **140 Words Per Minute**, which fits perfectly in the standard conversational range of 120 to 160 WPM. The filler word rate was low at **1.8%**, and camera engagement was **84%**. The AI accurately identified technical strengths, such as explaining database B-Tree index lookups, while suggesting improvements on write overhead.
+>
+> **Second, Practical Benefits:**
+> Students can practice unlimited mock interviews anytime at home. They receive immediate, structured feedback to correct technical gaps and speaking habits before real campus drives. Most importantly, it builds genuine speaking confidence at zero financial cost.
+>
+> **Third, Future Scope & Limitations:**
+> In future updates, we plan to:
+> 1. Integrate the **Gemini Live Audio API** for real-time voice conversations and live interviewer interruptions.
+> 2. Embed an in-browser **Monaco code editor** for live coding interviews.
+> 3. Build a **College Placement Portal** where placement coordinators can assign interview batches to students.
+>
+> To be completely honest about current limitations: our camera metrics measure observable physical delivery patterns rather than internal psychological emotions, and the current workflow takes one answer per question."
 
 ---
 
 ## Slide 8: Conclusion & Thank You
-**Slide Title:** *Empowering Every Candidate with Objective AI Mentorship*  
-**Key Visual:** 3 Takeaway Cards, Presenter & Institution Banner, Call-to-Action.
 
-### 🎙️ Spoken Script (45–60 Seconds)
-> "To conclude, our AI Interview Preparation & Evaluation System accomplishes three key milestones:
-> 
-> 1. It is a **fully functional, verified multi-modal platform** combining Generative AI, local speech recognition, and computer vision with zero simulated or fake data.
-> 2. It is **privacy-first and zero-cost**, ensuring every engineering student can prepare effectively without financial barriers.
-> 3. It is **production and viva ready**, verified by automated test suites and one-click execution scripts.
-> 
-> I extend my sincere gratitude to the Department of Computer Science & Engineering at **Bansal Institute of Engineering & Technology, Lucknow**, and to our project guides and faculty for their continuous support.
-> 
-> Thank you for your time and attention. I am now open to your questions and eager to demonstrate the live application."
+**Slide Title:** *Conclusion & Thank You*  
+**Key Visual:** 3 Takeaway Cards, Team Names Banner, College Affiliation, and Q&A prompt.  
+**Target Duration:** 45–55 Seconds  
+
+### 🎙️ What You Should Say:
+
+> "To conclude our presentation:
+>
+> Our AI Interview Preparation & Evaluation System is a fully working, verified multi-modal platform. It combines modern web engineering, Google Gemini AI, and local speech recognition to solve a genuine problem faced by thousands of college students every year.
+>
+> It protects student data privacy, requires zero paid cloud subscriptions, and transforms interview anxiety into corporate placement readiness.
+>
+> On behalf of our team members—**Rajan Kumar Prajapati**, **Dhruv Maurya**, **Saloni**, and **Harsh Gupta**—we express our heartfelt gratitude to our project guide, our respected Head of Department, and the faculty members of **Bansal Institute of Engineering & Technology, Lucknow** for their guidance and encouragement.
+>
+> Thank you very much for your time and attention. We are now open for your questions and would love to answer them!"
 
 ---
 
-## 💡 Anticipated Viva Questions & Bulletproof Answers
+## 🎯 Top 8 Viva & Defense Questions (With Confident Answers)
 
-### Q1: Why did you run speech-to-text locally with faster-whisper instead of using Google Cloud Speech API?
-> **Answer:**  
-> *"Two reasons: cost and privacy. Cloud speech APIs charge per audio minute, which creates an ongoing expense for college students. By using `faster-whisper` with 8-bit integer quantization on the CPU, transcription runs completely free in under 3 seconds. Furthermore, student audio stays strictly on the local machine and is unlinked immediately after transcription, ensuring 100% data privacy."*
+Prepare these questions before your presentation. External examiners and teachers frequently ask them:
 
-### Q2: How does your camera-based behavioral analysis work without heavy server GPU processing?
+### Q1: Why did you run speech recognition locally instead of using Google Cloud Speech API?
 > **Answer:**  
-> *"We offload video processing entirely to the client's browser using the HTML5 Canvas API (`willReadFrequently: true`). Every 400 milliseconds, downscaled 160x120 frames are analyzed for upper-third facial skin distribution to estimate camera gaze, and temporal frame differencing to quantify head and posture movement. Only lightweight statistical aggregates (e.g., 84% gaze engagement) are sent to the backend. This gives us zero server GPU load and zero video streaming bandwidth."*
+> *"We chose `faster-whisper` locally for two reasons: **Cost and Privacy**. Cloud speech APIs charge money per minute of audio, which creates an ongoing cost for students. By running `faster-whisper` on the CPU with 8-bit quantization, transcription runs completely free in under 3 seconds. In addition, student audio stays strictly on the local computer and is never sent to third-party cloud servers, ensuring 100% student privacy."*
 
-### Q3: How do you prevent the AI from hallucinating or giving generic scores?
+### Q2: How does the camera analysis work without an expensive server GPU?
 > **Answer:**  
-> *"We use structured prompt engineering backed by Pydantic JSON schemas. The Gemini prompt requires the model to score four explicit dimensions (Relevance, Technical Accuracy, Communication, Confidence) from 0 to 10 and cite specific evidence from the student's transcribed answer. If the answer is vague or inaccurate, the model must explicitly list the omission under 'weaknesses' and provide an improved technical explanation."*
+> *"Video processing runs entirely on the client's laptop browser using the HTML5 Canvas API. The browser samples small video frames at 2.5 frames per second and uses pixel differencing to track upper-body stability and camera eye engagement. Only small statistical numbers—like 84% eye contact—are sent to the backend. This means zero GPU load on the server and zero video bandwidth consumption."*
 
-### Q4: How is candidate performance stored and tracked over time?
+### Q3: How do you ensure the AI grades answers fairly and does not give random scores?
 > **Answer:**  
-> *"We use PostgreSQL with an additive schema managed by Alembic. Every completed interview commits a parent `interviews` record, child `interview_questions` records, and `communication_metrics` in a single atomic transaction. The `/api/dashboard/stats` endpoint runs aggregate SQL queries across past sessions to compute overall averages and historical score trajectories."*
+> *"We use structured prompt engineering backed by strict Pydantic schemas. Gemini is instructed to evaluate four specific criteria: Relevance, Technical Accuracy, Communication Clarity, and Confidence, scoring each from 0 to 10. The AI is required to cite specific technical facts from the student's transcript to justify the score, and must provide concrete improvement advice."*
+
+### Q4: How is candidate progress tracked over multiple interviews?
+> **Answer:**  
+> *"We use a PostgreSQL database. Every completed interview session is saved in an atomic database transaction across our `interviews`, `interview_questions`, and `communication_metrics` tables. Our candidate dashboard runs SQL queries across past sessions to show average scores, total questions answered, and chronological score trendlines."*
+
+### Q5: How does the system extract skills from a candidate's resume?
+> **Answer:**  
+> *"We use the `pypdf` library to extract raw text from uploaded PDF resumes in memory. Our skill extraction service searches for over 60 industry-standard technical keywords (such as Python, React, Docker, PostgreSQL) and compares them against the job description to find matched competencies and detect missing skill gaps."*
+
+### Q6: What happens if a student speaks too fast or uses too many filler words?
+> **Answer:**  
+> *"Our communication engine measures speaking pace in Words Per Minute by dividing word count by speaking duration. A healthy conversational rate is 120 to 160 WPM. If the student speaks above 170 WPM or uses words like 'um', 'uh', and 'basically' repeatedly, the report alerts them with exact counts and offers advice on pacing and structured pauses."*
+
+### Q7: Why do you call camera metrics 'Observable Delivery Indicators' instead of confidence?
+> **Answer:**  
+> *"Because computer vision can only observe physical behaviors like eye direction, head stability, and posture. It cannot read internal human thoughts or emotions. Calling them 'Observable Delivery Indicators' with a clear student disclaimer is scientifically honest, ethical, and follows AI safety best practices."*
+
+### Q8: What was each team member's role in this project?
+> **Answer:**  
+> - **Rajan Kumar Prajapati:** Backend API architecture, FastAPI integration, Google Gemini prompt pipelines, and database modeling.  
+> - **Dhruv Maurya:** Speech-to-text pipeline with faster-whisper, audio recording, and communication pace analytics.  
+> - **Saloni:** Frontend UI development in React 19, responsive layout, and candidate performance dashboard.  
+> - **Harsh Gupta:** Browser-based camera analysis, resume PDF parsing, and end-to-end system testing.  
